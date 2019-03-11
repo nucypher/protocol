@@ -1,3 +1,42 @@
 % !TEX root = mint-paper.tex
 
 \section{The slashing protocol}
+\subsection{Verifying proofs of re-encryption correctness}
+
+Let the input $capsule$ be the tuple $(E,V,s)$. For each $cFrag = (E_1, V_1, id, X_A)$ with associated proof $\pi = (E_2, V_2, U_2, U_1, kfragSignature, \rho, metadata)$.
+The validation of a re-encryption correctness proof consists on the following steps:
+ \begin{enumerate}
+    \item Check that $kfragSignature$ is correct. 
+    \item Compute the hash value $h = H(E, E_1, E_2, V, V_1, V_2, U, U_1, U_2, metadata)$
+    \item Check that the following equations hold:
+    \begin{align} 
+\rho \cdot E &\stackrel{?}{=} E_2 + h \cdot E_1  			\label{eq:proof-e} \\ 
+\rho \cdot V &\stackrel{?}{=} V_2 + h \cdot V_1 			\label{eq:proof-v} \\
+\rho \cdot U &\stackrel{?}{=} U_2 + h \cdot U_1				\label{eq:proof-u}
+\end{align}
+ \end{enumerate}
+
+\subsection{On-chain approaches to re-encryption correctness validation}
+
+\subsubsection{Approach A: No ECC arithmetic support}
+
+As the time of writing, there is no native support for curve \textsf{secp256k1} arithmetic in the EVM. 
+This implies that if we want to perform on-chain EC arithmetics (e.g., point addition, point doubling, scalar multiplication, etc.), we need to write a new library. This was our first approach, which culminated with the development of Numerology, our own Solidity library for \textsf{secp256k1} arithmetics. 
+
+Numerology provides optimized ECC algorithms useful for verifying Schnorr-like zero-knowledge proofs (which  usually involve checking equations of the form $aP + bQ = R$). These algorithms are honed to spend as little gas as possible. In order to do so, we implement a method for simultaneous multiplication, instead of computing $aP$ and $bQ$ independently. We further speed up each multiplication by using an efficient curve endomorphism of \textsf{secp256k1}; to this regard, we implement the Gallant-Lambert-Vanstone (GLV) method, which allows trading each 256-bit multiplication, to a simultaneous multiplication with two 128-bit scalars. As a result, using Numerology to evaluate an equation of the form $aP + bQ = R$ takes approximately 500,000 gas. 
+
+Our re-encryption verification equations can be checked using Numerology once rearranged. For example, Equation \ref{eq:proof-e} can be rewritten as $\rho \cdot E - h \cdot E_1 = E_2$. Hence, the total cost in gas for the three equations is approximately 1.5 million gas, although with some additional optimizations due to the reuse of $\rho$ and $h$ in the tree of them, the total cost can be reduced to 1.3 million gas. 
+
+\subsubsection{Approach B: Using ``EC Multiplication verification`` as a primitive}
+Clearly, spending 1.3 million gas for a single REC verification is far from ideal. 
+
+Let us assume that we there is an inexpensive function \textsf{multVer}$(a, P, Q)$ that allows to verify whether $a \cdot P = Q$. 
+Let $P_{\rho} = \rho \cdot E$ and $P_{h} = h \cdot E_1$ be points precomputed off-chain by the verifier. Then Equation \ref{eq:proof-e} can be rewritten as $P_{\rho} = E_2 + P_{h}$, and it can be verified according to the following procedure.
+\begin{enumerate}
+	\item Check that \textsf{multVer}$(\rho, E, P_{\rho})$ and \textsf{multVer}$(h, E_1, P_h)$ hold; otherwise, output $\mathsf{Error}$.
+	\item Output $\mathsf{True}$ if $P_{\rho} = E_2 + P_{h} $ holds; $\mathsf{False}$, otherwise.
+\end{enumerate}
+
+
+
+
