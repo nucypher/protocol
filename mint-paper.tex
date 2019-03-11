@@ -9,7 +9,11 @@
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \usepackage{xcolor}
-\definecolor{magicmint}{rgb}{0.67, 0.94, 0.82}
+\definecolor{magicmint}{rgb}{0.67, 0.94, 0.82}		% Mint color
+
+\usepackage{enumitem}
+\setlist[enumerate]{label=\arabic*.}
+
 \title{Brief Article}
 \author{The Author}
 %\date{}                                           % Activate to display a given date or no date
