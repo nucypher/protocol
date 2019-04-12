@@ -2,30 +2,32 @@
 
 #### Problem #### 
 
-Currently, stakers choose to lock their NU tokens for a variety of durations, in units of month. The staker earns inflation-based rewards based on the reward coefficient 'kappa', which can be any of 12 discrete figures between 0.54 (1 month lock) and 1.0 (12 months lock) – 0.54, 0.58, 0.63, etc. The longer you stake, the higher your coefficient. 
+Currently, stakers choose to lock their NU tokens for a variety of durations, in units of month. The staker's inflation-based rewards are are modified by the reward coefficient 'kappa', which can be any of 12 discrete figures between 0.54 (= 1 month lock) and 1.0 (>= 12 months lock) – 0.54, 0.58, 0.63, etc. The longer you commit your stake, the higher the coefficient. 
 
-This coefficient is static with respect to collective choices of other stakers, despite the fact that this has profound effect on the utility of the network, particularly if too many stakers choose short durations (1, 2 months etc). 
+However, this coefficient is static with respect to the choices of other stakers, despite the fact that their collective choice have a profound effect on the utility of the network, particularly if too many stakers choose short durations (1, 2 months etc). 
 
-For the sake of argument, let's say that stakers choose short durations for the following reasons/inclinations: 
-1. to protect their assets against risk (e.g. the NU token depreciating)
-2. to avoid opportunity costs (e.g. not being able to afford to migrate capital over to another more promising network)
-3. to afford real-world short-term spending requirements (e.g. paying for an internet connection).
+For the sake of argument, let's say that stakers choose short durations for any of the following three preferences:
+1. to protect their assets against risk (e.g. the NU token significantly depreciating while their holding is locked)
+2. to minimise opportunity costs (e.g. not being able to afford to migrate capital over to another more promising network)
+3. to afford real-world short-term spending requirements (e.g. paying a monthly bill to an ISP).
 
-The actual list of reasons for short term staking is far longer, more complicated, and probably impossible to produce. However, even if our list covered all possible reasons/inclinations, it's clearly very difficult to parameterise the reward coefficient such that it accurately reflects the distribution of stakers and the strength of their inclinations at any given moment. A higher reward coefficient (i.e. extra compensation) for longer staking is specifically intended to counter-act the inclinations/reasons towards shorter staking, but we have no idea how strong those are for each staker, what they're worth, or even what they are.
+Obviously, the actual list of preferences (i.e. explanations) for short term staking is longer, more complicated, and probably impossible to exhaustively produce. However, even if our three-point list did cover all possible preferences, it's would still be very, very difficult to predict the strength of preference for each amongst a group of stakers at any given moment (as the population of stakers  and individual staker preferences change over time). Although a higher reward coefficient (i.e. extra compensation) for longer staking is specifically designed to counter-act the preference for shorter staking, as designers we have no real idea how strongly those preferences are held by stakers, what they're worth in money terms, or even what all those preferences are. The inability to predict or quantify these preferences means it is far from guaranteed we will parameterize the corresponding reward coefficient correctly in advance.
 
- This is problematic if we launch the network with parameters mismatch our stakers' inclinations, or indeed if this occurs at any point while the network is live. For example, if the coefficient for longer staking is not enough to persuade a sufficient number of stakers to commit for long periods, this may lead to network users being unable to issue long term sharing policies, particularly if they require larger numbers of independent stakers to faciliate their sharing flow. This may also undermine user confidence in the long-term reliability of the network. An excessive amount of short stake durations can also cause greater token price volatility. 
+Launching the network with parameters that mismatch our stakers' preferences is problematic, or indeed if this incongruence occurs at any point while the network is live. For example, if the coefficient for longer staking is not enough to persuade a sufficient number of stakers to commit for long periods, this may lead to network users being unable to issue long term sharing policies, particularly if they require larger numbers of independent stakers to faciliate their sharing flow. This may also undermine user confidence in the long-term reliability of the network. An excessive amount of short stake durations can also cause greater token price volatility. 
 
 #### Solution #### 
 
-A solution to this problem is to implement a flexible, self-correcting reward coefficient, driven by staking duration decisions of all network participants. Ideally, we want to legislate against group swings to either extreme (all choosing short durations, all choosing long durations).
+A solution to this problem is to implement a flexible, self-correcting reward coefficient, driven by the staking duration decisions of all network participants. Ideally, we want to legislate against group swings to either extreme (majority choosing short durations or majority choosing long durations).
 
-Our desired alogorithm will do the following: if a majority of stakers have chosen short durations, the reward coefficient increases for stakers who now choose longer durations, and decreases for stakers who now choose shorter durations. And vice versa.
+Our desired algorithm will do the following: if a majority of stakers have chosen short durations, the reward coefficient increases for stakers who now choose longer durations, and decreases for stakers who now choose shorter durations. And vice versa. This provides extra incentive to go against the crowd, thereby providing a balancing mechanism. 
 
-Note: for simplicity, the reward coefficient should be determined at the moment the staker submits their duration, and stay fixed until the tokens unlock. It would also help stakers a lot if the current median duration of stakes was accessible via the CLI or other staker interface, so they can make an informed decision. 
+Note: for simplicity, the reward coefficient can be determined at the moment the staker formally submits a duration for a given stake, and stay fixed at that rate until the tokens unlock. It would also help stakers a lot if the current median duration of stakes was accessible via the CLI or other staker interface, so they can make an informed decision. 
+
+Note: this will have an impact on the rate of token release - this needs to be thought about and possibly modelled. 
 
 #### Input variable: T_med #### 
 
-What is the input variable with which to modify the coefficient? There are actually a number of choices here – since stakers can theoretically divide their stake into as many durations as the number of tokens they own, the distribution looks rather complex. However, one approach is to line up all the tokens currently staked, and examine each individual token's duration attribute, or its 'time until unlock'. For now, let’s ignore who owns the token or how long their other tokens are staked for. From this table it is straightforward to derive the median duration of all staked tokens. We will use this variable, T_med, as our input, which will always be in discrete units of month (e.g. T_med = 4 months). 
+What is the input variable with which to modify the reward coefficient? There are actually a number of possibilities here – since stakers can theoretically divide their stake into as many durations as the number of tokens they own, the distribution is rather complex. However, one approach is to line up all the tokens currently staked by their duration attribute (from 1 to <12). For now, we can ignore who owns the token or how long their other tokens are staked for. From this aggregate it is straightforward to derive the median duration of all staked tokens. We will use this variable, T_med, as our input, which will always be in discrete units of month (e.g. T_med = 4 months). 
 
 #### Modifying the reward coefficient: c_kappa #### 
 
@@ -44,6 +46,7 @@ def calc_c_kappa(T_med, T_s):
 
 example_output = calc_c_kappa(T_med = 4, T_s = 11)
 print(example_output)
+# 0.791666666667
 ```
 This function can be combined with any other function (e.g. the existing kappa calculation) to bias it towards longer or shorter durations, if desired. 
 
