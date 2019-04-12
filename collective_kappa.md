@@ -21,17 +21,45 @@ A solution to this problem is to implement a flexible, self-correcting reward co
 
 Our desired algorithm will do the following: if a majority of stakers have chosen short durations, the reward coefficient increases for stakers who now choose longer durations, and decreases for stakers who now choose shorter durations. And vice versa. This provides extra incentive to go against the crowd, thereby providing a balancing mechanism. 
 
-Note: for simplicity, the reward coefficient can be determined at the moment the staker formally submits a duration for a given stake, and stay fixed at that rate until the tokens unlock. It would also help stakers a lot if the current median duration of stakes was accessible via the CLI or other staker interface, so they can make an informed decision. 
+Note: to avoid stakers gaming the system, the reward coefficient can be calculated at the moment the staker formally chooses and submits their duration for a given set of tokens, and this will stay fixed at that rate until the tokens unlock. It would also help stakers a lot if the current median duration of stakes was accessible via the CLI or other staker interface, so they can make an informed decision. 
 
-Note: this will have an impact on the rate of token release - this needs to be thought about and possibly modelled. 
+Note: this approach will have an impact on the rate of token release - this needs to be thought about. 
+
+#### Historical Examples #### 
+
+Livepeer's floating inflation rate, determined by the percentage of token-holders 'participating' (bonding tokens to transcoders), is a well-known and innovative attempt to avoid the trap of predefining an economic parameter that mismatches staker behaviour. Here is their algorithm (solidity): 
+
+```sh
+function setInflation() internal {
+        uint256 currentBondingRate = 0;
+        uint256 totalSupply = livepeerToken().totalSupply();
+        if (totalSupply > 0) {
+            uint256 totalBonded = bondingManager().getTotalBonded();
+            currentBondingRate = MathUtils.percPoints(totalBonded, totalSupply);
+        }
+        if (currentBondingRate < targetBondingRate) {
+            // Bonding rate is below the target - increase inflation
+            inflation = inflation.add(inflationChange);
+        } else if (currentBondingRate > targetBondingRate) {
+            // Bonding rate is above the target - decrease inflation
+            if (inflationChange > inflation) {
+                inflation = 0;
+            } else {
+                inflation = inflation.sub(inflationChange);
+            }
+        }
+```
+
+One criticism of their approach is this function's reliance on predefining a target bonding rate, which arguably kicks the inflexibility issue from one parameter to another. On the other hand, it is no doubt easier to choose an ideal participation rate (LivePeer sets this to 50%), and add an inflation-correcting mechanism to achieve this, than the exact opposite.
+
 
 #### Input variable: T_med #### 
 
-What is the input variable with which to modify the reward coefficient? There are actually a number of possibilities here – since stakers can theoretically divide their stake into as many durations as the number of tokens they own, the distribution is rather complex. However, one approach is to line up all the tokens currently staked by their duration attribute (from 1 to <12). For now, we can ignore who owns the token or how long their other tokens are staked for. From this aggregate it is straightforward to derive the median duration of all staked tokens. We will use this variable, T_med, as our input, which will always be in discrete units of month (e.g. T_med = 4 months). 
+What is the input variable with which to modify our reward coefficient? There are actually a number of possibilities here – since stakers can theoretically divide their stake into as many durations as the number of tokens they own, the overall distribution of stake durations is rather complex. However, a simple approach is to line up all the tokens already staked by their individual duration attribute (from 1 to <12). For now, we can ignore who owns the token or how long their other tokens are staked for. From this two-column table it is straightforward to derive the median duration of all staked tokens. We will use this variable, T_med, as our input, which will always be in discrete units of month (e.g. T_med = 4 months). 
 
 #### Modifying the reward coefficient: c_kappa #### 
 
-The following function computes a reward coefficient for a stake with a chosen a duration of T_s, where the current median duration of stakes is T_med. 
+The following python function computes a reward coefficient for a stake with a chosen a duration of T_s, where the current median duration of stakes is T_med. The output coefficient is normalised between 0 and 1.
 
 ```sh
 small_stake_multiplier = 0.5
@@ -69,3 +97,14 @@ To get a sense of the outputs, here are all the combinatins of T_s and T_med. Fo
 
 
 ![Visualised outputs in a scatter graph](collective_kappa_outputs.png)
+
+
+
+#### Expected Outcomes ####
+
+To be investigated/modelled following team feedback. 
+
+Intuitively, and if staker preferences are evenly distributed from short to long durations (between 1 and 12 months) prior to being presented with this new incentive coefficient, then this approach will push median durations (T_med) to the centre, i.e. around 6 months. From a network point of view, it may be better for T_med to be a longer period than this. It is possible to configure the algorithm such that the 'centre' is pushes behaviour to a target median duration of 12 or 18 months. 
+
+This also demonstrates an advantage that NuCypher has over LivePeer. Their target participation rate of 50% is a little arbitrary – the result of a compromise between two vaguely defined goals (on one had, maximising bonding, and on the other, quote: "the ability to transfer the token, the ability to use it for the main utility of the network, and the ability to use it within ecosystem applications are all reasons not to stake"). In our case, we can choose a target median duration rate as a direct requirement of our adopter/users, reflected in the lengths of their sharing policies. 
+
