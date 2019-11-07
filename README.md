@@ -1,6 +1,6 @@
 ## Protocol Research
 
-This repo absorbs all *upstream* research, development and discussion relating to the NuCypher network's protocol/economic design, including but not limited to:
+This repo absorbs all **upstream** research, development and discussion relating to the NuCypher network's protocol/economic design, including but not limited to:
 
 1. Fee structure
 
@@ -20,11 +20,7 @@ This repo absorbs all *upstream* research, development and discussion relating t
 
    i. Monitoring/proofs
 
-   ii. Punishments
-
-       a) Grounds
-
-       b) Calculation
+   ii. Punishments (Grounds & Penalty calculation)
 
    iii. Challengers
 
@@ -64,6 +60,7 @@ This repo absorbs all *upstream* research, development and discussion relating t
 
    ii. Reputation/trust
 
+----
 
 ### Mint Paper (in progress)
 
