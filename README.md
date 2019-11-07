@@ -22,9 +22,9 @@ This repo absorbs all *upstream* research, development and discussion relating t
 
    ii. Punishments
 
-        *a) Grounds*
+       a) Grounds
 
-        *b) Calculation*
+       b) Calculation
 
    iii. Challengers
 
@@ -61,7 +61,7 @@ This repo absorbs all *upstream* research, development and discussion relating t
 8. Delegation
 
    i. Mechanism for good behavior
-   
+
    ii. Reputation/trust
 
 
