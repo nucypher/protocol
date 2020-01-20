@@ -1,6 +1,6 @@
 ## Protocol: Open Research 
 
-Following mainnet launch, the protocol governing the economics of the NuCypher network will continue to evolve and improve. Although certain initial parameters and design chocies are irreversible post-launch, there are a number of signficant mechanisms that can be upgraded or augmented in order to improve security, service quality and the general health of the network. The following list introduces some open, protocol-related research topics: 
+Following mainnet launch, the protocol governing the economics of the NuCypher network will continue to evolve. Although certain initial parameters and design choices are irreversible post-launch, there are a number of signficant mechanisms that can be upgraded or augmented in order to improve security, service quality and the general health of the network. The following list introduces some open, protocol-related research topics: 
 
 1) **Pricing structure, free market dynamics and commercial engagement**
 
@@ -12,7 +12,7 @@ Incorrect re-encryptions can be provably detected and punished. However, the exa
 
 3) **Subsidies and service quality** 
 
-Ther action required to earn subsidies (inflationary rewards) does not align perfectly with actual work performed on behalf of users, which risks some service-providers configuring their machines to execute the bare minimum required to collect the subsidy, and neglecting real service requests from users (e.g. by being offline). Relevant discussions: https://github.com/nucypher/nucypher/issues/1272, https://github.com/nucypher/protocol/issues/13
+The action required to earn subsidies (inflationary rewards) does not align perfectly with actual work performed on behalf of users, which risks some service-providers configuring their machines to execute the bare minimum required to collect the subsidy, and neglecting real service requests from users (e.g. by being offline). Relevant discussions: https://github.com/nucypher/nucypher/issues/1272, https://github.com/nucypher/protocol/issues/13
 
 4) **Service-provider selection conditions**
 
@@ -23,7 +23,7 @@ If you are interested in contributing ideas or analyis to one or more of these t
 
 ----
 
-### Protcol: Mint Paper (in progress)
+### Protocol: Mint Paper (in progress)
 
 A paper documenting the protocol/economic mechanisms and parameters associated with the NuCypher network that have been implemented, deployed or established with some stability. This does not exclude mechanisms that may change later, but this would necessitate an update to the paper. Sources are in Latex.
 
