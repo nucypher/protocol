@@ -8,7 +8,7 @@ The definition of a service unit (the _pricing structure_) and its cost (the _pr
 
 2. **Payment tooling** 
 
-This refers to upgrading the process through which users settle their bills, for example via probabilistic and/or conditional micro-payments. Relevant discussion: https://forum.nucypher.com/t/a-skeleton-logic-proposal-for-another-economic-model-of-grant/157
+This refers to upgrading the process through which users settle their bills, for example via probabilistic and/or conditional micro-payments. Relevant discussion: https://github.com/nucypher/protocol/issues/15
 
 3. **Slashing conditions and penalty calculation**
 
@@ -24,9 +24,9 @@ The probability with which a service-provider is selected for a job can be lever
 Relevant discussions: https://github.com/nucypher/protocol/issues/9
 
 
-If you are interested in contributing ideas, analysis or in-depth feedback to one or more of these topics, as part of the Contributor Phase of the incentivized testnet (Come and Stake it) or otherwise, please drop us a email at submissions@nucypher.com. Summarize what you'd like to work on and we'll get back to you. Include the email, name, and ETH staking address you used to register for Come and Stake It. We reserve the sole right to determine how valuable a specific contribution is. 
+If you are interested in submitting ideas, analysis or in-depth feedback pertaining to one or more of these topics, as part of the Technical Contributions phase of the incentivized testnet (Come and Stake it), please drop us a email at submissions@nucypher.com. Summarize what you'd like to work on and we'll get back to you. These problems are not easy or quick to solve, so before getting stuck in, it’s worth checking with us that your work has the potential to be useful and/or qualify for a prize. Remember to include the email, name, and ETH staking address you used to register for Come and Stake It. We reserve the sole right to determine how valuable a specific contribution is. 
 
-Note that in NuCypher repositories _service-providers_ are also referred to as 'Ursulas', 'stakers', 'workers', 'proxies' and just 'providers'. In addition to perusing the links above, we recommend searching for discussions in our public Discord channels – in particular, to check if a question you have has already been answered.
+In addition to perusing the links above, we recommend searching for discussions in our public Discord channels – in particular, to check if a question you have has already been answered. Note that in NuCypher repositories and discussion channels _service-providers_ are also often referred to as 'Ursulas', 'stakers', 'workers', 'proxies' and just 'providers'.
 
 ----
 
